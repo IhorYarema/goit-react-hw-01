@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Options from './components/Options/Options';
 import Feedback from './components/Feedback/Feedback';
+import Notification from './components/Notification/Notification';
+import Description from './components/Description/Description';
 
 const App = () => {
   const [feedback, setFeedback] = useState({
@@ -10,20 +12,29 @@ const App = () => {
   });
 
   // Функція обробки кліків по кнопкам
-  const handleFeedback = type => {
+  const updateFeedback = feedbackType => {
     setFeedback(prev => ({
       ...prev,
-      [type]: prev[type] + 1,
+      [feedbackType]: prev[feedbackType] + 1,
     }));
   };
 
+  // Загальна кількість відгуків
+  const { good, neutral, bad } = feedback;
+  const totalFeedback = good + neutral + bad;
+
   return (
     <>
+      <Description />
       <Options
         options={Object.keys(feedback)}
-        onLeaveFeedback={handleFeedback}
+        onSendFeedback={updateFeedback}
       />
-      <Feedback feedback={feedback} />
+      {totalFeedback ? (
+        <Feedback feedback={feedback} total={totalFeedback} />
+      ) : (
+        <Notification />
+      )}
     </>
   );
 };
